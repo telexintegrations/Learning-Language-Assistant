@@ -1,0 +1,31 @@
+  {
+      "app_name": "Language Learning Assistant",
+      "app_description": "Delivers daily language lessons to your Telex channel.",
+      "app_url": "https://your-integration-url.com",
+      "integration_type": "interval",
+      "integration_category": "Education & E-Learning",
+      "settings": [
+          {
+              "label": "Channel Webhook URL",
+              "type": "text",
+              "description": "The webhook URL of the Telex channel where lessons will be posted.",
+              "required": true
+          },
+          {
+              "label": "Language",
+              "type": "dropdown",
+              "options": ["Spanish", "French", "German", "Mandarin", "Japanese"],
+              "description": "Select the language for the lessons.",
+              "default": "Spanish",
+              "required": true
+          },
+          {
+              "label": "Lesson Time",
+              "type": "text",
+              "description": "Time of day to send the lesson (HH:MM, 24-hour format).",
+              "default": "08:00",
+              "required": true
+          }
+      ],
+      "tick_url": "https://your-integration-url.com/tick"
+  }
