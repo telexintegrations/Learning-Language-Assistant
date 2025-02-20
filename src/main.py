@@ -116,16 +116,14 @@ async def send_lesson(webhook_url: str, lesson: dict):
         resp = await client.post(webhook_url, json=message)
         resp.raise_for_status()
 
-@app.post("/tick")    
+@app.post("/tick")
 async def tick(settings: Settings, background_tasks: BackgroundTasks):
-    """
-    The /tick endpoint sends the lesson immediately upon request.
-    """
     lesson = await fetch_daily_lesson(settings.language)
     if lesson is None:
         return {"status": "No lesson available for the specified language."}
     background_tasks.add_task(send_lesson, settings.channel_webhook_url, lesson)
-    return {"status": "Lesson scheduled for delivery"}
+    return {"status": "Lesson scheduled for delivery", "lesson": lesson}
+
 
 @app.get("/")
 async def read_root():
