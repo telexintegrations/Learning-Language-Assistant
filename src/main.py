@@ -1,5 +1,6 @@
 from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import httpx
 from datetime import datetime
 import pytz
@@ -7,6 +8,16 @@ import random
 import os
 
 app = FastAPI()
+
+# Add CORS middleware to allow requests from all origins for testing.
+# You can restrict origins as needed (e.g., to ["https://app.telex.im"]).
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with specific origins if needed.
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Replace these with your actual API credentials
 OXFORD_APP_ID = "7a566853"
@@ -123,7 +134,6 @@ async def tick(settings: Settings, background_tasks: BackgroundTasks):
         return {"status": "No lesson available for the specified language."}
     background_tasks.add_task(send_lesson, settings.channel_webhook_url, lesson)
     return {"status": "Lesson scheduled for delivery", "lesson": lesson}
-
 
 @app.get("/")
 async def read_root():
