@@ -4,6 +4,7 @@ import httpx
 from datetime import datetime
 import pytz
 import random
+import os
 
 app = FastAPI()
 
@@ -137,3 +138,9 @@ async def tick(settings: Settings, background_tasks: BackgroundTasks):
 @app.get("/")
 async def read_root():
     return {"message": "Language Learning Assistant API is running."}
+
+# Render deployment adjustment: run on host 0.0.0.0 and port from environment variable.
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
