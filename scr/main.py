@@ -1,14 +1,13 @@
 from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
 import httpx
-import requests
 from datetime import datetime
 import pytz
 import random
 
 app = FastAPI()
 
-# Configuration for external APIs (Replace with your actual keys)
+# Replace these with your actual API credentials
 OXFORD_APP_ID = "your_oxford_app_id"
 OXFORD_APP_KEY = "your_oxford_app_key"
 FORVO_API_KEY = "your_forvo_api_key"
@@ -19,14 +18,16 @@ class Settings(BaseModel):
     language: str = "Spanish"
     lesson_time: str = "08:00"
 
-def fetch_word_data(word: str) -> (str, str):
+async def fetch_word_data(word: str) -> (str, str):
     """
-    Fetches word definition and an example sentence from the Oxford Dictionaries API.
+    Asynchronously fetches word definition and an example sentence from the Oxford Dictionaries API.
     """
-    language = "en-us"  # Adjust based on target language if needed
-    url = f"https://od-api.oxforddictionaries.com/api/v2/entries/{language}/{word.lower()}"
+    language_code = "en-us"  # Adjust if needed
+    url = f"https://od-api.oxforddictionaries.com/api/v2/entries/{language_code}/{word.lower()}"
     headers = {"app_id": OXFORD_APP_ID, "app_key": OXFORD_APP_KEY}
-    response = requests.get(url, headers=headers)
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
     
     if response.status_code == 200:
         data = response.json()
@@ -40,12 +41,14 @@ def fetch_word_data(word: str) -> (str, str):
     else:
         return "Definition not found.", "Example not found."
 
-def fetch_pronunciation(word: str) -> str:
+async def fetch_pronunciation(word: str) -> str:
     """
-    Fetches the pronunciation audio URL for the word from the Forvo API.
+    Asynchronously fetches the pronunciation audio URL for the word from the Forvo API.
     """
     url = f"https://apifree.forvo.com/key/{FORVO_API_KEY}/format/json/action/word-pronunciations/word/{word}/language/en"
-    response = requests.get(url)
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
     
     if response.status_code == 200:
         data = response.json()
@@ -60,9 +63,8 @@ def fetch_pronunciation(word: str) -> str:
 async def fetch_daily_lesson(language: str) -> dict:
     """
     Constructs a lesson for the given language.
-    For demonstration, selects a random word from a predefined list and augments it with external API data.
+    It selects a random word from a predefined list and fetches its definition, usage example, and pronunciation.
     """
-    # In production, you might have a language-specific word list or database.
     word_list = {
         "Spanish": ["hola", "gracias", "amigo", "libro"],
         "French": ["bonjour", "merci", "ami", "livre"],
@@ -74,10 +76,10 @@ async def fetch_daily_lesson(language: str) -> dict:
     words = word_list.get(language, ["hello"])
     word = random.choice(words)
     
-    definition, example = fetch_word_data(word)
-    pronunciation_url = fetch_pronunciation(word)
+    definition, example = await fetch_word_data(word)
+    pronunciation_url = await fetch_pronunciation(word)
     
-    # Construct a dummy quiz (In production, create meaningful quiz data)
+    # Create a dummy quiz for demonstration purposes
     quiz_question = f"What is the meaning of '{word}'?"
     quiz_options = [definition, "Option B", "Option C", "Option D"]
     correct_answer = definition
@@ -94,7 +96,7 @@ async def fetch_daily_lesson(language: str) -> dict:
 
 async def send_lesson(webhook_url: str, lesson: dict):
     """
-    Sends the lesson to the provided webhook URL.
+    Sends the constructed lesson to the provided webhook URL.
     """
     message = {
         "text": (
@@ -116,10 +118,10 @@ async def send_lesson(webhook_url: str, lesson: dict):
 @app.post("/tick")
 async def tick(settings: Settings, background_tasks: BackgroundTasks):
     """
-    The /tick endpoint that Telex calls at the scheduled time.
-    It checks the current time against the lesson_time setting and sends the lesson if they match.
+    The /tick endpoint is called by Telex at the scheduled time.
+    It checks if the current time matches the user-defined lesson_time and, if so, sends the lesson.
     """
-    # Adjust timezone as needed. For this example, we use "America/New_York"
+    # Use a specific timezone (adjust as needed)
     user_tz = pytz.timezone("America/New_York")
     current_time = datetime.now(user_tz).strftime("%H:%M")
     
