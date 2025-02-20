@@ -9,8 +9,8 @@ import os
 app = FastAPI()
 
 # Replace these with your actual API credentials
-OXFORD_APP_ID = "your_oxford_app_id"
-OXFORD_APP_KEY = "your_oxford_app_key"
+OXFORD_APP_ID = "7a566853"
+OXFORD_APP_KEY = "d8e4abe77dce18dae9cf42ef9faece41"
 FORVO_API_KEY = "your_forvo_api_key"
 
 # Integration settings model
