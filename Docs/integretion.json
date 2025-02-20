@@ -1,6 +1,6 @@
 {
   "app_name": "Language Learning Assistant",
-  "app_description": "Delivers daily language lessons to your Telex channel.",
+  "app_description": "Delivers daily language lessons—including vocabulary, definitions, usage examples, pronunciation guides, and interactive quizzes—directly to your Telex channel.",
   "app_url": "https://your-deployed-app-url.com",
   "integration_type": "interval",
   "integration_category": "Education & E-Learning",
