@@ -116,24 +116,16 @@ async def send_lesson(webhook_url: str, lesson: dict):
         resp = await client.post(webhook_url, json=message)
         resp.raise_for_status()
 
-@app.post("/tick")
+@app.post("/tick")    
 async def tick(settings: Settings, background_tasks: BackgroundTasks):
     """
-    The /tick endpoint is called by Telex at the scheduled time.
-    It checks if the current time matches the user-defined lesson_time and, if so, sends the lesson.
+    The /tick endpoint sends the lesson immediately upon request.
     """
-    # Use a specific timezone (adjust as needed)
-    user_tz = pytz.timezone("America/New_York")
-    current_time = datetime.now(user_tz).strftime("%H:%M")
-    
-    if current_time == settings.lesson_time:
-        lesson = await fetch_daily_lesson(settings.language)
-        if lesson is None:
-            return {"status": "No lesson available for the specified language."}
-        background_tasks.add_task(send_lesson, settings.channel_webhook_url, lesson)
-        return {"status": "Lesson scheduled for delivery"}
-    else:
-        return {"status": "It's not time for the lesson yet."}
+    lesson = await fetch_daily_lesson(settings.language)
+    if lesson is None:
+        return {"status": "No lesson available for the specified language."}
+    background_tasks.add_task(send_lesson, settings.channel_webhook_url, lesson)
+    return {"status": "Lesson scheduled for delivery"}
 
 @app.get("/")
 async def read_root():
