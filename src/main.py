@@ -6,6 +6,7 @@ from datetime import datetime
 import pytz
 import random
 import os
+from dotenv import load_dotenv
 
 app = FastAPI()
 
