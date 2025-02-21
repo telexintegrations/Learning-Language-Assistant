@@ -1,31 +1,53 @@
-{
-  "app_name": "Language Learning Assistant",
-  "app_description": "Delivers daily language lessons—including vocabulary, definitions, usage examples, pronunciation guides, and interactive quizzes—directly to your Telex channel.",
-  "app_url": "https://learning-language-assistant-1.onrender.com",
-  "integration_type": "interval",
-  "integration_category": "Education & E-Learning",
-  "settings": [
-    {
-      "label": "Channel Webhook URL",
-      "type": "text",
-      "description": "The webhook URL of the Telex channel where lessons will be posted.",
-      "required": true
-    },
-    {
-      "label": "Language",
-      "type": "dropdown",
-      "options": ["Spanish", "French", "German", "Mandarin", "Japanese"],
-      "description": "Select the language for the lessons.",
-      "default": "Spanish",
-      "required": true
-    },
-    {
-      "label": "Lesson Time",
-      "type": "text",
-      "description": "Time of day to send the lesson (HH:MM, 24-hour format).",
-      "default": "08:00",
-      "required": true
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.get("/integration.json")
+async def get_integration_json(request: Request):
+    base_url = str(request.base_url).rstrip("/")
+    integration_schema = {
+        "data": {
+            "date": {
+                "created_at": "2025-02-21",  # Replace with your creation date
+                "updated_at": "2025-02-21"   # Replace with your last update date
+            },
+            "descriptions": {
+                "app_description": "A brief description of the application functionality.",
+                "app_logo": f"https://iili.io/Jki7972.png",  # Ensure you have a logo at this path
+                "app_name": "Learning Language Assistant",
+                "app_url": base_url,
+                "background_color": "#FFFFFF"  # Replace with your preferred background color
+            },
+            "integration_category": "Communication & Collaboration",
+            "integration_type": "output",
+            "is_active": True,
+            "output": [
+                {"label": "output_channel_1", "value": True},
+                {"label": "output_channel_2", "value": False}
+            ],
+            "key_features": [
+                "Feature description 1.",
+                "Feature description 2.",
+                "Feature description 3.",
+                "Feature description 4."
+            ],
+            "permissions": {
+                "monitoring_user": {
+                    "always_online": True,
+                    "display_name": "Performance Monitor"
+                }
+            },
+            "settings": [
+                {"label": "interval", "type": "text", "required": True, "default": "* * * * *"},
+                {"label": "Key", "type": "text", "required": True, "default": "1234567890"},
+                {"label": "Do you want to continue", "type": "checkbox", "required": True, "default": "Yes"},
+                {"label": "Provide Speed", "type": "number", "required": True, "default": 1000},
+                {"label": "Sensitivity Level", "type": "dropdown", "required": True, "default": "Low", "options": ["High", "Low"]},
+                {"label": "Alert Admin", "type": "multi-checkbox", "required": True, "default": ["Super-Admin"], "options": ["Super-Admin", "Admin", "Manager", "Developer"]}
+            ],
+            "tick_url": f"{base_url}/tick",
+            "target_url": None  # Replace with your target URL if applicable
+        }
     }
-  ],
-  "tick_url": "https://learning-language-assistant-1.onrender.com/tick"
-}
+    return JSONResponse(content=integration_schema)
