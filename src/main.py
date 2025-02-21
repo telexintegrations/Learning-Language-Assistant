@@ -35,7 +35,7 @@ async def fetch_word_data(word: str) -> (str, str):
     Asynchronously fetches word definition and an example sentence from the Oxford Dictionaries API.
     """
     language_code = "en-us"  # Adjust if needed
-    url = f"https://od-api.oxforddictionaries.com/api/v2/entries/{language_code}/{word.lower()}"
+    url = f"https://od-api-sandbox.oxforddictionaries.com/api/v2/entries/{language_code}/{word.lower()}"
     headers = {"app_id": OXFORD_APP_ID, "app_key": OXFORD_APP_KEY}
     
     async with httpx.AsyncClient() as client:
