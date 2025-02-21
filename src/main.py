@@ -20,8 +20,8 @@ app.add_middleware(
 )
 
 # Replace these with your actual API credentials
-OXFORD_APP_ID = "7a566853"
-OXFORD_APP_KEY = "d8e4abe77dce18dae9cf42ef9faece41"
+OXFORD_APP_ID = os.getenv("OXFORD_APP_ID")
+OXFORD_APP_KEY = os.getenv("OXFORD_APP_KEY")
 FORVO_API_KEY = "your_forvo_api_key"
 
 # Integration settings model
