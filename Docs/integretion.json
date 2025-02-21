@@ -1,7 +1,7 @@
 {
   "app_name": "Language Learning Assistant",
   "app_description": "Delivers daily language lessons—including vocabulary, definitions, usage examples, pronunciation guides, and interactive quizzes—directly to your Telex channel.",
-  "app_url": "https://your-deployed-app-url.com",
+  "app_url": "https://learning-language-assistant-1.onrender.com",
   "integration_type": "interval",
   "integration_category": "Education & E-Learning",
   "settings": [
@@ -27,5 +27,5 @@
       "required": true
     }
   ],
-  "tick_url": "https://your-deployed-app-url.com/tick"
+  "tick_url": "https://learning-language-assistant-1.onrender.com/tick"
 }
