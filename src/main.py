@@ -28,7 +28,7 @@ FORVO_API_KEY = "your_forvo_api_key"
 
 # Integration settings model
 class Settings(BaseModel):
-    channel_webhook_url: str = https://webhook.site/115812df-a8aa-44b8-9219-0455ba153a27
+    channel_webhook_url: str = "https://webhook.site/115812df-a8aa-44b8-9219-0455ba153a27"
     language: str = "Spanish"
     lesson_time: str = "08:00"
 
